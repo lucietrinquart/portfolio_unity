@@ -9,11 +9,14 @@ public class MachineInteraction : MonoBehaviour
     private bool isPlayerInRange = false;
     private CameraController cameraController;
 
+     private PlayerController playerController; 
+
     void Start()
     {
         interactionText.SetActive(false);
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         cameraController = Camera.main.GetComponent<CameraController>();
+        playerController = playerTransform.GetComponent<PlayerController>();
     }
 
     void Update()
@@ -33,7 +36,7 @@ public class MachineInteraction : MonoBehaviour
                 InteractWithMachine();
             }
             
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.T))
             {
                 ExitMachineView();
             }
@@ -51,6 +54,11 @@ public class MachineInteraction : MonoBehaviour
         if (cameraController != null)
         {
             cameraController.SetDistributeurView(transform, true);
+             // Désactivez le mouvement du joueur
+            if (playerController != null)
+            {
+                playerController.enabled = false; // Ou utilisez une méthode dédiée
+            }
         }
     }
 
@@ -59,6 +67,11 @@ public class MachineInteraction : MonoBehaviour
         if (cameraController != null)
         {
             cameraController.SetDistributeurView(null, false);
+            // Réactivez le mouvement du joueur
+            if (playerController != null)
+            {
+                playerController.enabled = true; // Ou utilisez une méthode dédiée
+            }
         }
     }
 
