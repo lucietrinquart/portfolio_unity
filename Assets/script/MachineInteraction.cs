@@ -5,11 +5,15 @@ public class MachineInteraction : MonoBehaviour
 {
     [SerializeField] private float interactionRadius = 2f;
     [SerializeField] private GameObject interactionText;
+    
+    [Header("Configuration de la machine")]
+    [SerializeField] private string machineType = "Distributeur";  // Valeur par défaut
+    [Tooltip("Définir le type de machine (ex: 'Distributeur', 'Arcade')")]
+    
     private Transform playerTransform;
     private bool isPlayerInRange = false;
     private CameraController cameraController;
-
-     private PlayerController playerController; 
+    private PlayerController playerController;
 
     void Start()
     {
@@ -53,8 +57,9 @@ public class MachineInteraction : MonoBehaviour
     {
         if (cameraController != null)
         {
-            cameraController.SetDistributeurView(transform, true);
-             // Désactivez le mouvement du joueur
+            cameraController.SetMachineView(transform, machineType, true);
+            
+            // Désactivez le mouvement du joueur
             if (playerController != null)
             {
                 playerController.enabled = false; // Ou utilisez une méthode dédiée
@@ -66,7 +71,8 @@ public class MachineInteraction : MonoBehaviour
     {
         if (cameraController != null)
         {
-            cameraController.SetDistributeurView(null, false);
+            cameraController.SetMachineView(null, "", false);
+            
             // Réactivez le mouvement du joueur
             if (playerController != null)
             {
