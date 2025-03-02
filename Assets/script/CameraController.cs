@@ -1,4 +1,7 @@
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class CameraController : MonoBehaviour
 {
@@ -11,8 +14,9 @@ public class CameraController : MonoBehaviour
     public class MachineViewSettings
     {
         public string machineName;               // Nom pour identifier la machine
-        public Vector3 cameraOffset;             // Position relative à la machine
+        public Vector3 cameraPosition;           // Position absolue de la caméra (au lieu d'un offset)
         public Vector3 cameraRotation;           // Rotation de la caméra
+        public bool useAbsolutePosition = false; // Utiliser position absolue ou relative
     }
     
     [Header("Paramètres des machines")]
@@ -33,10 +37,20 @@ public class CameraController : MonoBehaviour
     
     private void LateUpdate()
     {
-        if (isLookingAtMachine && currentMachine != null && currentSettings != null)
+        if (isLookingAtMachine && currentSettings != null)
         {
-            // Position fixe devant la machine avec décalage spécifique
-            Vector3 targetPosition = currentMachine.position + currentSettings.cameraOffset;
+            Vector3 targetPosition;
+            
+            // Utiliser soit la position absolue soit la position relative à la machine
+            if (currentSettings.useAbsolutePosition || currentMachine == null)
+            {
+                targetPosition = currentSettings.cameraPosition;
+            }
+            else
+            {
+                targetPosition = currentMachine.position + currentSettings.cameraPosition;
+            }
+            
             transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed * Time.deltaTime);
             
             // Calcul de la rotation souhaitée spécifique à la machine
@@ -59,7 +73,7 @@ public class CameraController : MonoBehaviour
         isLookingAtMachine = activate;
         currentMachine = machine;
         
-        if (activate && machine != null)
+        if (activate)
         {
             // Sauvegarde de la rotation et position initiale si ce n'est pas déjà fait
             if (initialRotation == Quaternion.identity)
@@ -95,10 +109,43 @@ public class CameraController : MonoBehaviour
         }
     }
     
+    // Méthode pour faciliter les tests dans l'éditeur
+    public void TestMachineView(string machineName)
+    {
+        foreach (MachineViewSettings settings in machineSettings)
+        {
+            if (settings.machineName == machineName)
+            {
+                Vector3 targetPosition = settings.useAbsolutePosition ? 
+                    settings.cameraPosition : 
+                    transform.position + settings.cameraPosition;
+                    
+                transform.position = targetPosition;
+                transform.rotation = Quaternion.Euler(settings.cameraRotation);
+                break;
+            }
+        }
+    }
+
     // Maintenir également l'ancienne méthode pour la compatibilité
     public void SetDistributeurView(Transform distributeur, bool activate)
     {
         // Rediriger vers la nouvelle méthode
         SetMachineView(distributeur, "Distributeur", activate);
+    }
+    
+    // Ajouter cette méthode pour capturer la position et rotation actuelles
+    public void CaptureCurrentTransform(string machineName)
+    {
+        for (int i = 0; i < machineSettings.Length; i++)
+        {
+            if (machineSettings[i].machineName == machineName)
+            {
+                machineSettings[i].cameraPosition = transform.position;
+                machineSettings[i].cameraRotation = transform.eulerAngles;
+                machineSettings[i].useAbsolutePosition = true;
+                break;
+            }
+        }
     }
 }
