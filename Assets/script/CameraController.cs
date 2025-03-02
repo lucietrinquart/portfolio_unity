@@ -21,7 +21,15 @@ public class CameraController : MonoBehaviour
     private bool isLookingAtMachine = false;
     private Transform currentMachine;
     private Quaternion initialRotation;
+    private Vector3 initialPosition;
     private MachineViewSettings currentSettings;
+    
+    private void Start()
+    {
+        // Sauvegarde de la position et rotation initiale de la caméra
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
+    }
     
     private void LateUpdate()
     {
@@ -32,7 +40,7 @@ public class CameraController : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed * Time.deltaTime);
             
             // Calcul de la rotation souhaitée spécifique à la machine
-            Quaternion targetRotation = Quaternion.Euler(currentSettings.cameraRotation) * Quaternion.LookRotation(currentMachine.position - transform.position);
+            Quaternion targetRotation = Quaternion.Euler(currentSettings.cameraRotation);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, smoothSpeed * Time.deltaTime);
         }
         else if (target != null && planet != null)
@@ -45,7 +53,7 @@ public class CameraController : MonoBehaviour
         }
     }
     
-    // Assurez-vous que cette méthode est publique
+    // Méthode pour définir la vue sur une machine
     public void SetMachineView(Transform machine, string machineName, bool activate)
     {
         isLookingAtMachine = activate;
@@ -53,8 +61,12 @@ public class CameraController : MonoBehaviour
         
         if (activate && machine != null)
         {
-            // Sauvegarde de la rotation initiale
-            initialRotation = transform.rotation;
+            // Sauvegarde de la rotation et position initiale si ce n'est pas déjà fait
+            if (initialRotation == Quaternion.identity)
+            {
+                initialRotation = transform.rotation;
+                initialPosition = transform.position;
+            }
             
             // Trouver les paramètres correspondant à cette machine
             currentSettings = null;
@@ -76,13 +88,14 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            // Retour à la rotation initiale
+            // Retour à la position et rotation initiales
+            transform.position = initialPosition;
             transform.rotation = initialRotation;
             currentSettings = null;
         }
     }
     
-    // Maintenir également l'ancienne méthode pour la compatibilité (juste au cas où)
+    // Maintenir également l'ancienne méthode pour la compatibilité
     public void SetDistributeurView(Transform distributeur, bool activate)
     {
         // Rediriger vers la nouvelle méthode
