@@ -57,10 +57,6 @@ public class MachineInteractionTablette : MonoBehaviour
                     case InteractionState.None:
                         // Première interaction - Vue machine (PREMIÈRE VUE)
                         PremierInteraction();
-                        break;
-                        
-                    case InteractionState.PremiereVue:
-                        // Deuxième interaction - Afficher les instructions
                         ShowInstructions();
                         break;
                         

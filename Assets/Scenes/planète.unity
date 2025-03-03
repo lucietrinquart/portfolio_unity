@@ -1857,7 +1857,8 @@ MonoBehaviour:
   interactionText: {fileID: 1816214799}
   machineType: Tablette
   tabletteTransform: {fileID: 62709676}
-  machineTabletteType: Tablette
+  premiereCameraType: PremierVue
+  deuxiemeCameraType: TabletteVue
   instructionPanel: {fileID: 1450531496}
   instructionText: {fileID: 1202177602}
 --- !u!4 &261837127 stripped
@@ -7301,14 +7302,21 @@ MonoBehaviour:
   smoothSpeed: 5
   machineSettings:
   - machineName: Distributeur
-    cameraOffset: {x: -0.32, y: 2.36, z: -2.46}
+    cameraPosition: {x: -0.32, y: 2.36, z: -2.46}
     cameraRotation: {x: 8.41, y: 0.16, z: 4.79}
+    useAbsolutePosition: 0
   - machineName: Arcade
-    cameraOffset: {x: -0.01, y: 2.89, z: -2.45}
+    cameraPosition: {x: -0.01, y: 2.89, z: -2.45}
     cameraRotation: {x: 9.6, y: -15.7, z: 12.37}
-  - machineName: Tablette
-    cameraOffset: {x: -1.39, y: 1.22, z: -2.3}
-    cameraRotation: {x: 3.5, y: 5.3, z: 36.24}
+    useAbsolutePosition: 0
+  - machineName: PremierVue
+    cameraPosition: {x: -0.97, y: 1.56, z: -0.22}
+    cameraRotation: {x: 3.5, y: 1.87, z: 33.67}
+    useAbsolutePosition: 0
+  - machineName: TabletteVue
+    cameraPosition: {x: -0.33, y: 0.31, z: -0.4}
+    cameraRotation: {x: 3.3, y: 5.3, z: 36.24}
+    useAbsolutePosition: 0
 --- !u!114 &1930186774
 MonoBehaviour:
   m_ObjectHideFlags: 0
