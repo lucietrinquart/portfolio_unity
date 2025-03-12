@@ -7822,10 +7822,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainPanel: {fileID: 510916631}
-  detailPanel: {fileID: 1069783849}
-  videoPanel: {fileID: 1387456489}
-  videoPlayer: {fileID: 296749928}
-  videoRawImage: {fileID: 1594477806}
+  detailPanel: {fileID: 886652397}
+  videoPanel: {fileID: 1019018503}
+  videoPlayer: {fileID: 202873422}
+  videoRawImage: {fileID: 1549132959}
   videoRenderTexture: {fileID: 8400000, guid: de75206f0a62a734c9943e692b8658ab, type: 2}
   detailText: {fileID: 0}
 --- !u!1 &216324299
@@ -9205,7 +9205,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!328 &296749928
 VideoPlayer:
   m_ObjectHideFlags: 0
@@ -28216,7 +28216,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1387456490
 MonoBehaviour:
   m_ObjectHideFlags: 0
