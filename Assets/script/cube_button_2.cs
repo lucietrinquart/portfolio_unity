@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.Video;
-using UnityEngine.UI; // Ajouté pour accéder aux composants UI
+using UnityEngine.UI;
 
 public class CubeButton2 : MonoBehaviour 
 {
@@ -38,18 +38,40 @@ public class CubeButton2 : MonoBehaviour
             // S'abonner à l'événement de fin de vidéo
             videoPlayer.loopPointReached += OnVideoFinished;
             
-            // Précharger la vidéo
-            videoPlayer.Prepare();
+            // Important: Désactiver autoPlay pour éviter que la vidéo se lance au démarrage
+            videoPlayer.playOnAwake = false;
+            
+            // Couper le son de la vidéo au démarrage
+            videoPlayer.SetDirectAudioMute(0, true);
+            
+            // Ne pas préparer la vidéo tout de suite pour éviter le chargement de la première frame
+            // videoPlayer.Prepare();  // Cette ligne est commentée
         }
         else
         {
             Debug.LogError("VideoPlayer n'est pas assigné dans l'inspecteur!");
         }
         
-        // Vérifier que le RawImage a bien le RenderTexture
-        if (videoRawImage != null && videoRenderTexture != null)
+        // Si on utilise un RenderTexture existant, le nettoyer au démarrage
+        if (videoRenderTexture != null)
         {
-            videoRawImage.texture = videoRenderTexture;
+            RenderTexture.active = videoRenderTexture;
+            GL.Clear(true, true, Color.black); // Nettoie avec du noir transparent
+            RenderTexture.active = null;
+        }
+        
+        // Vérifier que le RawImage a bien le RenderTexture mais le cacher initialement
+        if (videoRawImage != null)
+        {
+            if (videoRenderTexture != null)
+            {
+                videoRawImage.texture = videoRenderTexture;
+            }
+            
+            // S'assurer que le RawImage est invisible au départ
+            Color c = videoRawImage.color;
+            c.a = 0; // Alpha à 0 pour le rendre invisible
+            videoRawImage.color = c;
         }
     }
     
@@ -74,9 +96,13 @@ public class CubeButton2 : MonoBehaviour
         {
             videoPanel.SetActive(true);
             
-            // S'assurer que la vidéo est visible en plein écran
+            // Rendre le RawImage visible à nouveau
             if (videoRawImage != null)
             {
+                Color c = videoRawImage.color;
+                c.a = 1; // Alpha à 1 pour le rendre visible
+                videoRawImage.color = c;
+                
                 RectTransform rectTransform = videoRawImage.GetComponent<RectTransform>();
                 if (rectTransform != null)
                 {
@@ -88,7 +114,10 @@ public class CubeButton2 : MonoBehaviour
                 }
             }
             
-            // Attendre que la vidéo soit prête avant de la jouer
+            // Réactiver le son avant de jouer la vidéo
+            videoPlayer.SetDirectAudioMute(0, false);
+            
+            // Maintenant on prépare la vidéo seulement quand on en a besoin
             if (videoPlayer.isPrepared)
             {
                 PlayVideo();
@@ -134,6 +163,17 @@ public class CubeButton2 : MonoBehaviour
                     videoPanel.SetActive(false);
                 
                 videoPlaying = false;
+                
+                // Couper à nouveau le son
+                videoPlayer.SetDirectAudioMute(0, true);
+                
+                // Rendre le RawImage invisible à nouveau
+                if (videoRawImage != null)
+                {
+                    Color c = videoRawImage.color;
+                    c.a = 0; // Alpha à 0 pour le rendre invisible
+                    videoRawImage.color = c;
+                }
                 
                 // Afficher le panneau de détail
                 ShowDetailPanel();
